@@ -2,8 +2,7 @@
 
 My GitHub Page
 
-Cursos FORPAS Universidad de Sevilla 2023
+Cursos FORPAS Universidad de Sevilla 2024
 
 - Gorilla básico
 - Gorilla avanzado
-- Jenkins

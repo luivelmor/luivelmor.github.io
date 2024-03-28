@@ -1,0 +1,21 @@
+
+//**************************
+// BOOTSTRAP - ACOORDION
+//**************************
+    
+    //*************
+    // SHOW
+    //*************
+
+    <button class="accordion-button" ... aria-expanded="true".....> ... </button>
+
+    <div id="collapseThree" class="accordion-collapse show" ............
+
+
+
+    //*************
+    // COLLAPSED
+    //*************
+    <button class="accordion-button collapsed" ... aria-expanded="false".....> ... </button>
+
+    <div id="collapseOne" class="accordion-collapse collapsed collapse" ............

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Luis Vela">
+    <meta name="description" content="Gorilla avanzado">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico" type="./images/favicon/x-icon">
+    <link rel="icon" href="./images/favicon/favicon.ico" type="image/x-icon">
+    <title>Forpas Gorilla</title>
+    <!-- csss -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href="css/my_style.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="container">
+        <!-- header -->
+        <header>
+            <h2>luivelmor.github.io</h2>
+        </header>
+        <!-- nav -->
+        <nav>
+            <a href="index.html">Inicio</a> |
+            <a href="contacto.html">Contacto</a>
+        </nav>
+        <br>
+        <!-- article -->
+        <article>
+            <center>
+                <h1>Curso FORPAS 2023: Gorilla avanzado</h1>
+                <img src="./images/gorilla.png" width="300" height="80">
+                <p>luisvela@us.es, juanafr@us.es</p>
+            </center>
+
+            <br>
+            <hr>
+
+            <section>
+                <h4>Horarios:</h4>
+                - CRAI - Aula TIC 4:<br>
+                <ul>
+                    <li><strike>miércoles 10 mayo - 16:00h a 21:00h</strike></li>
+                    <li><strike>jueves 11 mayo - 16:00h a 21:00h</strike></span></li>
+                    <li><strike>lunes 15 mayo - 16:00h a 21:00h</strike></li>
+                    <li><strike>miércoles 17 mayo - 16:00h a 21:00h</strike></li>
+                </ul>
+            </section>
+
+            <hr><br>
+
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            <h4>Día 1: Puesta en marcha del entorno virtual con Multipass y VSCode</h4>
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapsed collapse" aria-labelledby="headingOne"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            - Objetivos del día:
+                            <ul>
+                                <li><a href="./data/Gorilla avanzado - Montar entorno GorillaServer.pdf"
+                                        target="_blank">Gorilla avanzado - Montar entorno GorillaServer.pdf</a></li>
+                                <li><a href="./data/11 - Tarea programada gorilla.pdf" target="_blank">11 - Tarea
+                                        programada gorilla.pdf</a></li>
+                                <li><a href="./data/9 - Auto manifest.pdf" target="_blank">9 - Auto manifest.pdf</a>
+                                </li>
+                            </ul>
+                            <br>
+                            - Documentación de Multipass:
+                            <ul>
+                                <li><a href="./data/ANEXO I - Entorno de trabajo virtualizado con Multipass.pdf"
+                                        target="_blank">ANEXO I
+                                        -
+                                        Entorno de trabajo virtualizado con Multipass.pdf</a></li>
+                                <li><a href="./data/ANEXO II - Conectar mediante SSH a una máquina virtual de Multipass.pdf"
+                                        target="_blank">ANEXO II - Conectar mediante SSH a una máquina virtual de
+                                        Multipass.pdf</a></li>
+                                <li><a href="./data/ANEXO III - Multipass + Cloud-init.pdf" target="_blank">ANEXO III -
+                                        Multipass + Cloud-init.pdf</a></li>
+                            </ul>
+                            <br>
+                            - Cloud-init:
+                            <ul>
+                                <li>Cloud-init para el servidor de Gorilla: <a
+                                        href="./data/cloud-config_gorillaServer.yaml"
+                                        target="_blank">cloud-config_gorillaServer.yaml</a></li>
+                            </ul>
+                            <br>
+                            - Enlaces de ayuda:
+                            <ul>
+                                <li><a href="https://cloudinit.readthedocs.io/en/latest/reference/examples.html"
+                                        target="_blank">Ejemplos sintaxis Cloud-init</a></li>
+                                <li><a href="https://github.com/1dustindavis/gorilla" target="_blank">Proyecto gorilla
+                                        en GitHub</a></li>
+                                <li><a href="https://github.com/1dustindavis/gorilla/wiki" target="_blank">Wiki del
+                                        proyecto gorilla</a></li>
+                                <li><a href="https://github.com/1dustindavis/gorilla/releases"
+                                        target="_blank">Ejecutable gorilla</a>
+                                </li>
+                                <li><a href="https://learn.microsoft.com/es-es/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v"
+                                        target="_blank">Para Multipass: Habilitar Hyper-v en Windows 10</a></li>
+                                <li><a href="https://www.digitalocean.com/community/tutorials/how-to-use-visual-studio-code-for-remote-development-via-the-remote-ssh-plugin"
+                                        target="_blank">Para Visual Studio Code: Extensión "Remote SSH"</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <h4>Día 2: Instalación y configuración de GorillaReport: servidor y cliente.</h4>
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapsed collapse" aria-labelledby="headingTwo"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            - Objetivos del día:
+                            <ul>
+                                <li><a href="./data/Gorilla avanzado - Montar entorno servidor GorillaReport.pdf"
+                                        target="_blank">Gorilla avanzado - Montar entorno servidor GorillaReport.pdf</a>
+                                </li>
+                                <li><a href="./data/Gorilla avanzado - Montar entorno cliente GorillaReport.pdf"
+                                        target="_blank">Gorilla avanzado -
+                                        Montar entorno cliente GorillaReport.pdf</a>
+                                </li>
+                            </ul>
+                            <br>
+                            - Cloud-init:
+                            <ul>
+                                <li>Cloud-init para el servidor de GorillaReport: <a
+                                        href="./data/cloud-config_gorillaReport.yaml"
+                                        target="_blank">cloud-config_gorillaReport.yaml</a></li>
+                                <li>Cloud-init para el servidor de GorillaServer con las tareas de gorillaReport: <a
+                                        href="./data/cloud-config_gorillaServer_with_report.yaml"
+                                        target="_blank">cloud-config_gorillaServer_with_report.yaml</a></li>
+                            </ul>
+                            <br>
+                            - Enlaces de ayuda:
+                            <ul>
+                                <li>Proyecto GitHub GorillaReport (servidor): <a
+                                        href="https://github.com/juanantoniofr/gorillareport"
+                                        target="_blank">https://github.com/juanantoniofr/gorillareport</a></li>
+                                <li>Proyecto GitHub GorillaReport (cliente): <a
+                                        href="https://github.com/juanantoniofr/GorillaReport-Agent"
+                                        target="_blank">https://github.com/juanantoniofr/GorillaReport-Agent</a></li>
+                                <li><a href="https://cloudinit.readthedocs.io/en/latest/reference/examples.html"
+                                        target="_blank">Ejemplos
+                                        sintaxis Cloud-init</a></li>
+                                <li><a href="https://github.com/1dustindavis/gorilla/wiki" target="_blank">Wiki del
+                                        proyecto gorilla</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <h4>Día 3: Finalizar instalación y configuración de GorillaReport. Envío de reportes.</h4>
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapsed collapse" aria-labelledby="headingThree"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            - Objetivos del día:
+
+                            <ul>
+                                <li><a href="./data/Gorilla avanzado - Montar entorno cliente GorillaReport.pdf"
+                                        target="_blank">Gorilla
+                                        avanzado -
+                                        Montar entorno cliente GorillaReport.pdf</a>
+                                </li>
+                                <li>Registro de un cliente en gorillaReport</li>
+                                <li>Envío de la información básica de inventario de un cliente a gorillaReport</li>
+                                <li>Envío del reporte .json de Gorilla a gorillaReport</li>
+                                <li>Ejecutar tareas con errores en el cliente y depurar con gorillaReport</li>
+                            </ul>
+                            <br>
+                            - Cloud-init:
+                            <ul>
+                                <li>Cloud-init para el servidor de GorillaReport: <a
+                                        href="./data/cloud-config_gorillaReport.yaml"
+                                        target="_blank">cloud-config_gorillaReport.yaml</a></li>
+                                <li>Cloud-init para el servidor de GorillaServer con las tareas de gorillaReport: <a
+                                        href="./data/cloud-config_gorillaServer_with_report.yaml"
+                                        target="_blank">cloud-config_gorillaServer_with_report.yaml</a></li>
+                            </ul>
+                            <br>
+                            - Catalogs para probar con GorillaReport:
+                            <ul>
+                                <li>
+                                    Vista gráfica: <a href="http://luivelmor.net/">http://luivelmor.net/</a>
+                                </li>
+                                <li>
+                                    Texto plano: <a
+                                        href="http://luivelmor.net/static/gorillaserver/forpas/avanzado/">http://luivelmor.net/static/gorillaserver/forpas/avanzado/</a>
+                                </li>
+                            </ul>
+                            <br>
+                            - Enlaces de ayuda:
+                            <ul>
+                                <li>Proyecto GitHub GorillaReport (servidor): <a
+                                        href="https://github.com/juanantoniofr/gorillareport"
+                                        target="_blank">https://github.com/juanantoniofr/gorillareport</a></li>
+                                <li>Proyecto GitHub GorillaReport (cliente): <a
+                                        href="https://github.com/juanantoniofr/GorillaReport-Agent"
+                                        target="_blank">https://github.com/juanantoniofr/GorillaReport-Agent</a></li>
+                                <li><a href="https://cloudinit.readthedocs.io/en/latest/reference/examples.html"
+                                        target="_blank">Ejemplos
+                                        sintaxis Cloud-init</a></li>
+                                <li><a href="https://github.com/1dustindavis/gorilla/wiki" target="_blank">Wiki del
+                                        proyecto gorilla</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            <h4>Día 4: Práctica doble: depura con gorillaReport y aplica seguridad a tu entorno de
+                                Gorilla</h4>
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapsed collapse" aria-labelledby="headingFour"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            - Objetivos del día:
+                            <ul>
+                                <li><a href="./data/Gorilla avanzado - Ejercicio final gorillaReport.pdf"
+                                        target="_blank">Gorilla avanzado - Ejercicio final gorillaReport.pdf</a>
+                                </li>
+                                <li><a href="./data/Gorilla avanzado - Ejercicio final seguridad en Gorilla.pdf"
+                                        target="_blank">Gorilla avanzado - Ejercicio final seguridad en Gorilla.pdf</a>
+                                </li>
+                            </ul>
+                            <br>
+                            - Cloud-init:
+                            <ul>
+                                <li>Cloud-init para el servidor de GorillaReport: <a
+                                        href="./data/cloud-config_gorillaReport.yaml"
+                                        target="_blank">cloud-config_gorillaReport.yaml</a></li>
+                                <li>Cloud-init para el servidor de GorillaServer con las tareas de gorillaReport: <a
+                                        href="./data/cloud-config_gorillaServer_with_report.yaml"
+                                        target="_blank">cloud-config_gorillaServer_with_report.yaml</a></li>
+                            </ul>
+                            <br>
+                            - Scripts:
+                            <ul>
+                                <li>Crear una cuenta de usuario: <a href="./data/ejemplos_ps1/newUserAccount.ps1"
+                                        target="_blank">newUserAccount.ps1</a></li>
+                                <li>Cambiar permisos: <a href="./data/ejemplos_ps1/secureGorillaDirectories.ps1"
+                                        target="_blank">secureGorillaDirectories.ps1</a></li>
+                            </ul>
+                            <br>
+                            - Enlaces de ayuda:
+                            <ul>
+                                <li>Autenticación básica (Basic auth) en apache: <a
+                                        href="https://www.digitalocean.com/community/tutorials/how-to-set-up-password-authentication-with-apache-on-ubuntu-20-04"
+                                        target="_blank">https://www.digitalocean.com/community/tutorials/how-to-set-up-password-authentication-with-apache-on-ubuntu-20-04</a>
+                                </li>
+                                <li>¿Es https + Basic-Auth seguro?: <a
+                                        href="https://security.stackexchange.com/questions/988/is-basic-auth-secure-if-done-over-https"
+                                        target="_blank">https://security.stackexchange.com/questions/988/is-basic-auth-secure-if-done-over-https</a>
+                                </li>
+                                <li>¿Es https + Basic-Auth seguro?(2): <a
+                                        href="https://www.quora.com/Is-BASIC-Auth-secure-if-done-over-HTTPS"
+                                        target="_blank">https://www.quora.com/Is-BASIC-Auth-secure-if-done-over-HTTPS</a>
+                                </li>
+                            </ul>
+                            <br><br>
+                            <pre style="margin-bottom: 0px;">
+                                <code>
+                                    function dia4() {
+                      
+                                        if ( ( no_hay_dudas() y temario_finalizado() ) || hora == 21:00 ) {
+                                                fin_curso = true
+                                                exit 0
+                                        }
+                                        else {       
+                                                if ( alguien_tiene_dudas() ) {
+                                                    resolver_duda() && repaso()
+                                                }
+                                                else {
+                                                    temario++
+                                                }
+                                                dia4()
+                                        }
+                                    }
+                                              
+                                    di4()
+                                </code>                
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <br>
+    <hr><br>
+
+    </article>
+    <br><br><br><br>
+    <!-- footer -->
+    <footer style="text-align: center;">
+        © 2023 luivelmor.github.io
+    </footer>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+    crossorigin="anonymous"></script>
+
+</html>

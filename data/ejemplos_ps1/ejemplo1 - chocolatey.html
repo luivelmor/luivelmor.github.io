@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="author" content="Luis Vela">
+    </head>
+    <body>
+
+        <figure>
+            <figcaption>Ejemplo 1: trabajando con Chocolatey</figcaption>
+            <pre>
+              <code>
+                # instalar
+                choco install 7zip -y
+                # actualizar
+                choco upgrade firefox -y
+                # instalar múltiples versiones de una misma aplicación
+                choco install firefox –version 68.0 -my
+                # desinstalar
+                choco uninstall googlechrome -y
+                # listar todas las aplicaciones instaladas
+                $apps_list = choco list -–localonly
+                # guardamos la lista en un fichero
+                $file = “C:\Users\tecnico\Desktop\apps_list.txt”
+                New-Item -ItemType “file” -Path $file
+                Set-Content -Path $file -Value $apps_list    
+              </code>
+            </pre>
+          </figure>
+
+    </body>
+</html>

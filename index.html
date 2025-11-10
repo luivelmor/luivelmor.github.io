@@ -20,6 +20,21 @@
         .scale .desc { font-size:.8rem }
         .active-band { outline:2px solid #0d6efd }
         .submetric{ font-size:.95rem; color:#475569 }
+
+        /* --- NUEVO: estilos para % y gain --- */
+        .tp-pct{
+            font-weight:700;
+            font-size:clamp(1.25rem,2.2vw,1.75rem); /* = mismo tamaño que .metric .value */
+            line-height:1.1;
+            color:#111;
+        }
+        .tp-gain{
+            font-weight:700;
+            font-size:clamp(1.35rem,2.4vw,1.9rem);  /* un poco más grande que el precio */
+            line-height:1.1;
+            color:#111;
+        }
+
         .is-note { font-size:.85rem; color:#0d6efd }
         .is-danger { color:#dc3545 }
     </style>
@@ -35,7 +50,7 @@
                             <h1 class="h3 mb-1">Investment Prep</h1>
                             <p class="text-secondary mb-0">ATR-based sizing with risk controls.</p>
                         </div>
-                        <span class="badge text-bg-primary badge-pill">v3.2</span>
+                        <span class="badge text-bg-primary badge-pill">v3.3</span>
                     </div>
 
                     <!-- GLOBAL CURRENCY -->
@@ -212,12 +227,16 @@
 
                     <!-- A) TP factors -->
                     <div class="row g-3 align-items-end">
-                        <div class="col-md-4">
+                        <div class="col-md-6 col-lg-4">
                             <label class="form-label fw-semibold">TP preset (×1R)</label>
                             <select id="tpPreset" class="form-select">
+                                <!-- NUEVOS PRESETS + los 3 existentes -->
+                                <option value="ultraConservative">Ultra-Conservative (0.25R, 0.5R, 1.0R)</option>
                                 <option value="conservative">Conservative (0.5R, 1.0R, 1.5R)</option>
+                                <option value="balanced">Balanced (0.75R, 1.5R, 2.5R)</option>
                                 <option value="moderate" selected>Moderate (1.0R, 2.0R, 3.0R)</option>
                                 <option value="aggressive">Aggressive (2.0R, 3.5R, 5.0R)</option>
+                                <option value="ultraAggressive">Ultra-Aggressive (3.0R, 5.0R, 8.0R)</option>
                             </select>
                         </div>
                     </div>
@@ -229,7 +248,7 @@
                             <div class="metric mt-2">
                                 <span class="muted">TP1 price</span>
                                 <span id="tp1" class="value">—</span>
-                                <span id="tp1pct" class="submetric">—</span>
+                                <span id="tp1pct" class="tp-pct">—</span>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -238,7 +257,7 @@
                             <div class="metric mt-2">
                                 <span class="muted">TP2 price</span>
                                 <span id="tp2" class="value">—</span>
-                                <span id="tp2pct" class="submetric">—</span>
+                                <span id="tp2pct" class="tp-pct">—</span>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -247,7 +266,7 @@
                             <div class="metric mt-2">
                                 <span class="muted">TP3 price</span>
                                 <span id="tp3" class="value">—</span>
-                                <span id="tp3pct" class="submetric">—</span>
+                                <span id="tp3pct" class="tp-pct">—</span>
                             </div>
                         </div>
                     </div>
@@ -294,15 +313,15 @@
                     <div class="row g-4 mt-2">
                         <div class="col-md-4">
                             <div class="submetric" id="tp1allocText">—</div>
-                            <div class="submetric" id="tp1gainText">—</div>
+                            <div class="tp-gain" id="tp1gainText">—</div>
                         </div>
                         <div class="col-md-4">
                             <div class="submetric" id="tp2allocText">—</div>
-                            <div class="submetric" id="tp2gainText">—</div>
+                            <div class="tp-gain" id="tp2gainText">—</div>
                         </div>
                         <div class="col-md-4">
                             <div class="submetric" id="tp3allocText">—</div>
-                            <div class="submetric" id="tp3gainText">—</div>
+                            <div class="tp-gain" id="tp3gainText">—</div>
                         </div>
                     </div>
 
@@ -431,9 +450,12 @@
     }
     function applyPreset(name){
         const presets = {
-            conservative: [0.5, 1.0, 1.5],
-            moderate:     [1.0, 2.0, 3.0],
-            aggressive:   [2.0, 3.5, 5.0]
+            ultraConservative: [0.25, 0.5, 1.0],
+            conservative:      [0.5, 1.0, 1.5],
+            balanced:          [0.75, 1.5, 2.5],
+            moderate:          [1.0, 2.0, 3.0],
+            aggressive:        [2.0, 3.5, 5.0],
+            ultraAggressive:   [3.0, 5.0, 8.0]
         };
         const [a,b,c] = presets[name] || presets.moderate;
         tp1f.value = a; tp2f.value = b; tp3f.value = c;

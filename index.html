@@ -21,7 +21,7 @@
         .active-band { outline:2px solid #0d6efd }
         .submetric{ font-size:.95rem; color:#475569 }
 
-        /* --- NUEVO: estilos para % y gain --- */
+        /* % y gain TP */
         .tp-pct{
             font-weight:400;
             line-height:1.1;
@@ -48,7 +48,7 @@
                             <h1 class="h3 mb-1">Investment Prep</h1>
                             <p class="text-secondary mb-0">ATR-based sizing with risk controls.</p>
                         </div>
-                        <span class="badge text-bg-primary badge-pill">v3.3</span>
+                        <span class="badge text-bg-primary badge-pill">v3.4</span>
                     </div>
 
                     <!-- GLOBAL CURRENCY -->
@@ -174,6 +174,11 @@
                                 <span class="muted">Stop distance</span>
                                 <span id="stopDistance" class="value">—</span>
                                 <small class="muted">= ATR · k (same currency as price).</small>
+
+                                <!-- NUEVO: PRECIO EXACTO DEL STOP -->
+                                <span class="muted mt-1">Stop price</span>
+                                <span id="stopPrice" class="value">—</span>
+                                <small class="muted">Entry − Stop distance (long).</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -228,7 +233,6 @@
                         <div class="col-md-6 col-lg-4">
                             <label class="form-label fw-semibold">TP preset (×1R)</label>
                             <select id="tpPreset" class="form-select">
-                                <!-- NUEVOS PRESETS + los 3 existentes -->
                                 <option value="ultraConservative">Ultra-Conservative (0.25R, 0.5R, 1.0R)</option>
                                 <option value="conservative">Conservative (0.5R, 1.0R, 1.5R)</option>
                                 <option value="balanced">Balanced (0.75R, 1.5R, 2.5R)</option>
@@ -269,7 +273,7 @@
                         </div>
                     </div>
 
-                    <!-- B) Allocation preset in one line -->
+                    <!-- B) Allocation preset -->
                     <div class="row g-3 align-items-end mt-4">
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Allocation preset (%)</label>
@@ -282,7 +286,7 @@
                         </div>
                     </div>
 
-                    <!-- C) Next line: TP% inputs -->
+                    <!-- C) TP% inputs -->
                     <div class="row g-3 align-items-end mt-1">
                         <div class="col-md-4">
                             <label class="form-label">TP1 %</label>
@@ -307,7 +311,7 @@
                         </div>
                     </div>
 
-                    <!-- D) Summary line after the three TP% inputs -->
+                    <!-- D) Summary -->
                     <div class="row g-4 mt-2">
                         <div class="col-md-4">
                             <div class="submetric" id="tp1allocText">—</div>
@@ -356,10 +360,14 @@
 </div>
 
 <script>
-    (function extraColors(){const st=document.createElement('style');st.textContent=`
-      .text-bg-teal{color:#fff;background:#14b8a6!important}
-      .text-bg-orange{color:#fff;background:#f59e0b!important}
-    `;document.head.appendChild(st)})();
+    (function extraColors(){
+        const st=document.createElement('style');
+        st.textContent=`
+          .text-bg-teal{color:#fff;background:#14b8a6!important}
+          .text-bg-orange{color:#fff;background:#f59e0b!important}
+        `;
+        document.head.appendChild(st)
+    })();
 
     // Elements
     const currencySelect = document.getElementById('currencySelect');
@@ -381,6 +389,7 @@
     const freeMarginEl = document.getElementById('freeMargin');
 
     const stopDistanceEl = document.getElementById('stopDistance');
+    const stopPriceEl = document.getElementById('stopPrice');   // NUEVO
     const positionSizeEl = document.getElementById('positionSize');
     const notionalInput = document.getElementById('notionalInput');
     const notionalAutoBtn = document.getElementById('notionalAutoBtn');
@@ -420,8 +429,19 @@
     // Helpers
     function toNum(v){ if(typeof v!=='string') return NaN; return parseFloat(v.replace(',', '.')); }
     function fmt(x,min=0,max=2){ if(!Number.isFinite(x)) return '—'; return x.toLocaleString(undefined,{minimumFractionDigits:min,maximumFractionDigits:max}); }
-    function fmtAuto(x){ if(!Number.isFinite(x)) return '—'; const a=Math.abs(x); const d=a>=1000?0:a>=100?1:a>=10?2:a>=1?3:4; return x.toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}); }
-    function classifyPct(p){ if(p<1) return {cls:'text-bg-success',label:'Very low'}; if(p<2) return {cls:'text-bg-teal',label:'Low'}; if(p<3) return {cls:'text-bg-warning',label:'Moderate'}; if(p<5) return {cls:'text-bg-orange',label:'High'}; return {cls:'text-bg-danger',label:'Very high'}; }
+    function fmtAuto(x){
+        if(!Number.isFinite(x)) return '—';
+        const a=Math.abs(x);
+        const d=a>=1000?0:a>=100?1:a>=10?2:a>=1?3:4;
+        return x.toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});
+    }
+    function classifyPct(p){
+        if(p<1) return {cls:'text-bg-success',label:'Very low'};
+        if(p<2) return {cls:'text-bg-teal',label:'Low'};
+        if(p<3) return {cls:'text-bg-warning',label:'Moderate'};
+        if(p<5) return {cls:'text-bg-orange',label:'High'};
+        return {cls:'text-bg-danger',label:'Very high'};
+    }
     function suggestedK(pct){
         if (!Number.isFinite(pct)) return {k:1, band:'—'};
         if (pct < 1) return {k:1.75, band:'ATR% < 1 → k≈1.5–2.0'};
@@ -477,17 +497,21 @@
         const price=toNum(priceEl.value);
         const atr=toNum(atrEl.value);
         const equity=Math.max(0, toNum(equityEl.value));
-        let leverage=Math.max(1, toNum(leverageEl.value)); // puede ser autocorregido
+        let leverage=Math.max(1, toNum(leverageEl.value));
         const freeMargin=Math.max(0, toNum(freeMarginEl.value));
         const riskEuro = Math.max(0, toNum(riskAbsEl.value));
 
         const valid=Number.isFinite(price)&&price>0&&Number.isFinite(atr)&&atr>=0;
         if (!valid){
-            [atrPctText,atrPctLabel,oneREl,stopDistanceEl,positionSizeEl,requiredMarginEl,marginUsageEl,chosenRiskEl,
-                plannedPnl,plannedRR,tp1,tp2,tp3,tp1pct,tp2pct,tp3pct,tp1allocText,tp2allocText,tp3allocText,tp1gainText,tp2gainText,tp3gainText]
+            [atrPctText,atrPctLabel,oneREl,stopDistanceEl,stopPriceEl,positionSizeEl,
+                requiredMarginEl,marginUsageEl,chosenRiskEl,
+                plannedPnl,plannedRR,tp1,tp2,tp3,tp1pct,tp2pct,tp3pct,
+                tp1allocText,tp2allocText,tp3allocText,tp1gainText,tp2gainText,tp3gainText]
                 .forEach(el=>el.textContent='—');
-            atrPctBadge.textContent='-- %'; atrPctBadge.className='badge text-bg-secondary badge-pill';
-            notionalInput.value = ''; notionalHint.textContent='Auto: Units × Price. (Manual override off)';
+            atrPctBadge.textContent='-- %';
+            atrPctBadge.className='badge text-bg-secondary badge-pill';
+            notionalInput.value = '';
+            notionalHint.textContent='Auto: Units × Price. (Manual override off)';
             maxLevNote.textContent = 'Max leverage allowed: —';
             leverageEl.classList.remove('is-invalid');
             leverageHint.textContent = 'Kept ≤ max allowed by Free margin.';
@@ -512,18 +536,20 @@
         kHint.textContent = `Auto suggestion: ${k.toFixed(2)} (${band})` + (kOverridden ? ' · overridden' : '');
         const kActive = toNum(kInput.value);
 
-        // Stop distance
+        // Stop distance y precio del stop
         const stop = atr * (Number.isFinite(kActive)?kActive:1);
         stopDistanceEl.textContent = sym + ' ' + fmtAuto(stop);
 
-        // ---------- Units, Notional, Leverage & Margin (COUPLED) ----------
+        const stopPrice = price - stop; // LONG
+        stopPriceEl.textContent = sym + ' ' + fmtAuto(stopPrice);
+
+        // ---------- Units, Notional, Leverage & Margin ----------
         let units, notional;
 
         if (notionalOverridden) {
-            // Notional manual -> ajusta leverage mínimo para encajar en el free margin
             notional = Math.max(0, toNum(notionalInput.value));
             if (freeMargin > 0 && notional > 0) {
-                const levNeeded = notional / freeMargin;        // IMR = 1/lev -> RM = N/lev
+                const levNeeded = notional / freeMargin;
                 if (!Number.isFinite(leverage) || leverage < levNeeded) {
                     leverage = Math.max(1, levNeeded);
                     leverageEl.value = leverage.toFixed(2);
@@ -532,9 +558,8 @@
             units = price > 0 ? (notional / price) : NaN;
 
         } else {
-            // Notional auto -> limitar por riesgo y por margen
             const unitsByRisk   = stop > 0 ? (riskEuro / stop) : 0;
-            const allowedNotion = freeMargin * Math.max(1, leverage); // máximo notional con FM y lev actuales
+            const allowedNotion = freeMargin * Math.max(1, leverage);
             const unitsByMargin = price > 0 ? (allowedNotion / price) : 0;
 
             units   = Math.min(unitsByRisk, unitsByMargin);
@@ -544,18 +569,15 @@
         positionSizeEl.textContent = fmtAuto(units);
         notionalHint.textContent   = notionalOverridden ? 'Manual override ON' : 'Auto: Units × Price. (Manual override off)';
 
-        // Max leverage (info)
         const maxLeverage = (freeMargin>0 && notional>0) ? (notional / freeMargin) : NaN;
         maxLevNote.textContent = Number.isFinite(maxLeverage) ? `Max leverage allowed: ${fmt(maxLeverage,2,2)}×` : 'Max leverage allowed: —';
 
-        // Required margin (siempre ≤ Free margin con la lógica anterior)
         const requiredMargin = notional / Math.max(1, leverage);
         requiredMarginEl.textContent = sym + ' ' + fmt(requiredMargin,2,2);
 
         const usage = equity>0 ? (requiredMargin / equity * 100) : NaN;
         marginUsageEl.textContent = Number.isFinite(usage) ? fmt(usage,2,2)+' %' : '—';
 
-        // Validación visual
         if (requiredMargin > freeMargin + 1e-9) {
             leverageEl.classList.add('is-invalid');
             leverageHint.textContent = 'Insufficient free margin (adjust Leverage or Notional).';
@@ -564,10 +586,9 @@
             leverageHint.textContent = 'Kept ≤ max allowed by Free margin.';
         }
 
-        // Risk shown
         chosenRiskEl.textContent = sym + ' ' + fmt(riskEuro,2,2);
 
-        // -------- TAKE PROFITS (LONG) with Stop as 1R --------
+        // -------- TAKE PROFITS (LONG) --------
         const f1=Math.max(0, toNum(tp1f.value));
         const f2=Math.max(0, toNum(tp2f.value));
         const f3=Math.max(0, toNum(tp3f.value));
@@ -586,7 +607,7 @@
         tp2pct.textContent = Number.isFinite(pct2) ? `( +${fmt(pct2,2,2)} % )` : '—';
         tp3pct.textContent = Number.isFinite(pct3) ? `( +${fmt(pct3,2,2)} % )` : '—';
 
-        // Allocations (% normalizadas)
+        // Allocations normalizadas
         let a1=Math.max(0,toNum(tp1pctAlloc.value));
         let a2=Math.max(0,toNum(tp2pctAlloc.value));
         let a3=Math.max(0,toNum(tp3pctAlloc.value));
@@ -596,7 +617,6 @@
         document.getElementById('allocNote').textContent =
             Math.abs(sum-100)>0.5 ? `Normalized from ${fmt(sum,0,0)}% to 100%.` : 'Must sum 100% (auto-normalized if not).';
 
-        // Units por TP y PnL
         const u1 = units * n1, u2 = units * n2, u3 = units * n3;
         const pnl1 = u1 * (tp1p - price);
         const pnl2 = u2 * (tp2p - price);
@@ -659,7 +679,8 @@
         tpAllocPreset.value='conservative'; applyAllocPreset('conservative');
         kOverridden=false; kInput.value='1.00';
         currencySelect.value='$'; applyCurrencySymbol('$');
-        notionalOverridden=false; notionalInput.value=''; notionalHint.textContent='Auto: Units × Price. (Manual override off)';
+        notionalOverridden=false; notionalInput.value='';
+        notionalHint.textContent='Auto: Units × Price. (Manual override off)';
         update(); priceEl.focus();
     });
     document.getElementById('prefillBtn').addEventListener('click', ()=>{

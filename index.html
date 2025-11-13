@@ -21,7 +21,6 @@
         .active-band { outline:2px solid #0d6efd }
         .submetric{ font-size:.95rem; color:#475569 }
 
-        /* % y gain TP */
         .tp-pct{
             font-weight:400;
             line-height:1.1;
@@ -48,7 +47,7 @@
                             <h1 class="h3 mb-1">Investment Prep</h1>
                             <p class="text-secondary mb-0">ATR-based sizing with risk controls.</p>
                         </div>
-                        <span class="badge text-bg-primary badge-pill">v3.4</span>
+                        <span class="badge text-bg-primary badge-pill">v3.5</span>
                     </div>
 
                     <!-- GLOBAL CURRENCY -->
@@ -175,7 +174,7 @@
                                 <span id="stopDistance" class="value">—</span>
                                 <small class="muted">= ATR · k (same currency as price).</small>
 
-                                <!-- NUEVO: PRECIO EXACTO DEL STOP -->
+                                <!-- Stop price -->
                                 <span class="muted mt-1">Stop price</span>
                                 <span id="stopPrice" class="value">—</span>
                                 <small class="muted">Entry − Stop distance (long).</small>
@@ -251,6 +250,7 @@
                                 <span class="muted">TP1 price</span>
                                 <span id="tp1" class="value">—</span>
                                 <span id="tp1pct" class="tp-pct">—</span>
+                                <small id="tp1place" class="muted">Place TP1 at —</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -260,6 +260,7 @@
                                 <span class="muted">TP2 price</span>
                                 <span id="tp2" class="value">—</span>
                                 <span id="tp2pct" class="tp-pct">—</span>
+                                <small id="tp2place" class="muted">Place TP2 at —</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -269,6 +270,7 @@
                                 <span class="muted">TP3 price</span>
                                 <span id="tp3" class="value">—</span>
                                 <span id="tp3pct" class="tp-pct">—</span>
+                                <small id="tp3place" class="muted">Place TP3 at —</small>
                             </div>
                         </div>
                     </div>
@@ -389,7 +391,7 @@
     const freeMarginEl = document.getElementById('freeMargin');
 
     const stopDistanceEl = document.getElementById('stopDistance');
-    const stopPriceEl = document.getElementById('stopPrice');   // NUEVO
+    const stopPriceEl = document.getElementById('stopPrice');
     const positionSizeEl = document.getElementById('positionSize');
     const notionalInput = document.getElementById('notionalInput');
     const notionalAutoBtn = document.getElementById('notionalAutoBtn');
@@ -410,6 +412,10 @@
     const tp1pct = document.getElementById('tp1pct');
     const tp2pct = document.getElementById('tp2pct');
     const tp3pct = document.getElementById('tp3pct');
+
+    const tp1place = document.getElementById('tp1place');
+    const tp2place = document.getElementById('tp2place');
+    const tp3place = document.getElementById('tp3place');
 
     const tpAllocPreset = document.getElementById('tpAllocPreset');
     const tp1pctAlloc = document.getElementById('tp1pctAlloc');
@@ -506,7 +512,8 @@
             [atrPctText,atrPctLabel,oneREl,stopDistanceEl,stopPriceEl,positionSizeEl,
                 requiredMarginEl,marginUsageEl,chosenRiskEl,
                 plannedPnl,plannedRR,tp1,tp2,tp3,tp1pct,tp2pct,tp3pct,
-                tp1allocText,tp2allocText,tp3allocText,tp1gainText,tp2gainText,tp3gainText]
+                tp1allocText,tp2allocText,tp3allocText,tp1gainText,tp2gainText,tp3gainText,
+                tp1place,tp2place,tp3place]
                 .forEach(el=>el.textContent='—');
             atrPctBadge.textContent='-- %';
             atrPctBadge.className='badge text-bg-secondary badge-pill';
@@ -539,7 +546,6 @@
         // Stop distance y precio del stop
         const stop = atr * (Number.isFinite(kActive)?kActive:1);
         stopDistanceEl.textContent = sym + ' ' + fmtAuto(stop);
-
         const stopPrice = price - stop; // LONG
         stopPriceEl.textContent = sym + ' ' + fmtAuto(stopPrice);
 
@@ -556,7 +562,6 @@
                 }
             }
             units = price > 0 ? (notional / price) : NaN;
-
         } else {
             const unitsByRisk   = stop > 0 ? (riskEuro / stop) : 0;
             const allowedNotion = freeMargin * Math.max(1, leverage);
@@ -599,6 +604,10 @@
         tp1.textContent = sym + ' ' + fmtAuto(tp1p);
         tp2.textContent = sym + ' ' + fmtAuto(tp2p);
         tp3.textContent = sym + ' ' + fmtAuto(tp3p);
+
+        tp1place.textContent = `Place TP1 at ${sym} ${fmtAuto(tp1p)}`;
+        tp2place.textContent = `Place TP2 at ${sym} ${fmtAuto(tp2p)}`;
+        tp3place.textContent = `Place TP3 at ${sym} ${fmtAuto(tp3p)}`;
 
         const pct1 = ((tp1p - price)/price)*100;
         const pct2 = ((tp2p - price)/price)*100;

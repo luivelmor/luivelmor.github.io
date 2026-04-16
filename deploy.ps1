@@ -30,7 +30,7 @@ $changes = git status --porcelain
 if ($LASTEXITCODE -eq 0) {
     # Hacer push
     Write-Host "📤 Subiendo cambios a GitHub..." -ForegroundColor Yellow
-    git push origin main
+    git push origin master
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host "`n✅ ¡Despliegue exitoso!" -ForegroundColor Green

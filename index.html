@@ -9,7 +9,37 @@
         :root { --bg-gradient: radial-gradient(1400px 800px at 90% -10%, #f0f5ff 0, #ffffff 50%); }
         body { background: var(--bg-gradient); }
         .app-card{ border:0; border-radius:1.25rem; box-shadow:0 10px 30px rgba(16,24,40,.06),0 2px 6px rgba(16,24,40,.04) }
-        .section-title{ font-size:.95rem; letter-spacing:.3px; text-transform:uppercase; color:#64748b }
+        
+        /* Section styling improvements */
+        .section-block {
+            background: rgba(255,255,255,0.4);
+            border: 1px solid rgba(0,123,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .section-title{ 
+            font-size:1.1rem; 
+            letter-spacing:.3px; 
+            text-transform:uppercase; 
+            color:#1e40af;
+            font-weight:700;
+            margin-bottom:1rem;
+            padding-bottom:0.5rem;
+            border-bottom:2px solid #3b82f6;
+            display:flex;
+            align-items:center;
+            gap:0.5rem;
+        }
+        .section-title::before {
+            content: "";
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 2px;
+        }
+        
         .metric{ display:grid; gap:.25rem }
         .metric .value{ font-size:clamp(1.25rem,2.2vw,1.75rem); font-weight:700; letter-spacing:.2px }
         .muted{ color:#6b7280; font-size:.9rem }
@@ -34,6 +64,99 @@
 
         .is-note { font-size:.85rem; color:#0d6efd }
         .is-danger { color:#dc3545 }
+        
+        /* Floating JSON Panel */
+        .floating-config {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            max-height: 80vh;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            z-index: 1000;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+        
+        .floating-config.collapsed {
+            width: 60px;
+            height: 60px;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .config-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .config-title {
+            color: #3b82f6;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .toggle-btn {
+            background: none;
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            color: #3b82f6;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        
+        .toggle-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .config-json {
+            white-space: pre-wrap;
+            line-height: 1.4;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .json-key { color: #60a5fa; }
+        .json-string { color: #34d399; }
+        .json-number { color: #fbbf24; }
+        .json-boolean { color: #f87171; }
+        
+        /* Conditional visibility */
+        .hidden-section {
+            display: none !important;
+        }
+        
+        .fade-out {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .floating-config {
+                position: relative;
+                top: auto;
+                right: auto;
+                width: 100%;
+                margin-top: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -45,23 +168,37 @@
                     <div class="d-flex align-items-start justify-content-between mb-4">
                         <div>
                             <h1 class="h3 mb-1">Investment Prep</h1>
-                            <p class="text-secondary mb-0">ATR-based sizing with risk controls.</p>
+                            <p class="text-secondary mb-0">Advanced position sizing with risk controls and live configuration.</p>
                         </div>
-                        <span class="badge text-bg-primary badge-pill">v3.5</span>
+                        <span class="badge text-bg-primary badge-pill">v4.0</span>
                     </div>
 
-                    <!-- GLOBAL CURRENCY -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold me-2">Currency</label>
-                        <select id="currencySelect" class="form-select w-auto d-inline-block">
-                            <option value="$" selected>$</option>
-                            <option value="€">€</option>
-                        </select>
-                        <small class="text-secondary ms-2">Applies to all monetary fields.</small>
+                    <!-- GLOBAL SETTINGS -->
+                    <div class="section-block">
+                        <div class="section-title">Global Settings</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Currency</label>
+                                <select id="currencySelect" class="form-select">
+                                    <option value="$" selected>$</option>
+                                    <option value="€">€</option>
+                                </select>
+                                <small class="text-secondary">Applies to all monetary fields.</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Risk Method</label>
+                                <select id="riskMethodSelect" class="form-select">
+                                    <option value="balance" selected>% of Balance</option>
+                                    <option value="atr">ATR Based</option>
+                                </select>
+                                <small class="text-secondary">How to calculate position risk.</small>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- BLOCK 1 · MARKET INPUTS -->
-                    <div class="mb-3 section-title">Market inputs</div>
+                    <!-- MARKET INPUTS -->
+                    <div class="section-block">
+                        <div class="section-title">Market Inputs</div>
                     <div class="row g-4">
                         <div class="col-md-6">
                             <label for="price" class="form-label fw-semibold">Price</label>
@@ -83,10 +220,11 @@
                         </div>
                     </div>
 
-                    <hr class="my-4">
+                    </div>
 
-                    <!-- BLOCK 2 · VOLATILITY BASED RISK -->
-                    <div class="mb-3 section-title">Volatility based risk</div>
+                    <!-- VOLATILITY ANALYSIS -->
+                    <div id="volatilitySection" class="section-block">
+                        <div class="section-title">Volatility Analysis</div>
                     <div class="row g-4 align-items-start">
                         <div class="col-md-4">
                             <div class="metric">
@@ -124,27 +262,32 @@
                         </div>
                     </div>
 
-                    <hr class="my-4">
+                    </div>
 
-                    <!-- BLOCK 3 · RISK -->
-                    <div class="mb-3 section-title">Risk</div>
+                    <!-- RISK & POSITION SIZING -->
+                    <div class="section-block">
+                        <div class="section-title">Risk & Position Sizing</div>
                     <div class="row g-4">
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold d-block">Fixed amount (Risk)</label>
-                            <div class="input-group">
-                                <span class="input-group-text currency">$</span>
-                                <input type="number" id="riskAbsolute" class="form-control" step="1" min="0" value="25" />
+                            <div id="fixedRiskGroup">
+                                <label class="form-label fw-semibold d-block">Fixed amount (Risk)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text currency">$</span>
+                                    <input type="number" id="riskAbsolute" class="form-control" step="1" min="0" value="25" />
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold d-block">% of Equity</label>
-                            <div class="input-group">
-                                <span class="input-group-text currency">$</span>
-                                <input type="number" id="equity" class="form-control" step="1" min="0" value="100000" />
-                                <span class="input-group-text">r%</span>
-                                <input type="number" id="riskPct" class="form-control" step="0.05" min="0.05" value="0.5" />
+                            <div id="percentRiskGroup">
+                                <label class="form-label fw-semibold d-block">% of Equity</label>
+                                <div class="input-group">
+                                    <span class="input-group-text currency">$</span>
+                                    <input type="number" id="equity" class="form-control" step="1" min="0" value="100000" />
+                                    <span class="input-group-text">r%</span>
+                                    <input type="number" id="riskPct" class="form-control" step="0.05" min="0.05" value="0.5" />
+                                </div>
+                                <div class="form-text">Risk = Equity · (r/100). Syncs to "Fixed amount".</div>
                             </div>
-                            <div class="form-text">Risk = Equity · (r/100). Syncs to “Fixed amount”.</div>
                         </div>
 
                         <div class="col-md-6">
@@ -163,10 +306,11 @@
                         </div>
                     </div>
 
-                    <hr class="my-4">
+                    </div>
 
-                    <!-- BLOCK 4 · FINAL METRICS -->
-                    <div class="mb-3 section-title">Final metrics</div>
+                    <!-- FINAL METRICS -->
+                    <div class="section-block">
+                        <div class="section-title">Final Metrics</div>
                     <div class="row g-4">
                         <div class="col-md-4">
                             <div class="metric">
@@ -222,10 +366,11 @@
                         </div>
                     </div>
 
-                    <hr class="my-4">
+                    </div>
 
-                    <!-- BLOCK 5 · TAKE PROFITS -->
-                    <div class="mb-3 section-title">Take profits</div>
+                    <!-- TAKE PROFIT STRATEGY -->
+                    <div class="section-block">
+                        <div class="section-title">Take Profit Strategy</div>
 
                     <!-- A) TP factors -->
                     <div class="row g-3 align-items-end">
@@ -347,11 +492,21 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 d-flex gap-2">
-                        <button id="resetBtn" class="btn btn-outline-secondary btn-sm">Reset</button>
-                        <button id="prefillBtn" class="btn btn-outline-primary btn-sm">Prefill demo</button>
+                        <div class="mt-4 d-flex gap-2">
+                            <button id="resetBtn" class="btn btn-outline-secondary btn-sm">Reset</button>
+                            <button id="prefillBtn" class="btn btn-outline-primary btn-sm">Prefill demo</button>
+                        </div>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Floating Config Panel -->
+            <div id="floatingConfig" class="floating-config">
+                <div class="config-header">
+                    <div class="config-title">Trading Config</div>
+                    <button id="toggleConfig" class="toggle-btn">−</button>
+                </div>
+                <div id="configContent" class="config-json"></div>
             </div>
 
             <p class="text-center text-muted mt-4 mb-0">
@@ -373,6 +528,11 @@
 
     // Elements
     const currencySelect = document.getElementById('currencySelect');
+    const riskMethodSelect = document.getElementById('riskMethodSelect');
+    const floatingConfig = document.getElementById('floatingConfig');
+    const configContent = document.getElementById('configContent');
+    const toggleConfigBtn = document.getElementById('toggleConfig');
+    
     const priceEl = document.getElementById('price');
     const atrEl = document.getElementById('atr');
     const atrPctText = document.getElementById('atrPctText');
@@ -497,6 +657,77 @@
     // State
     let kOverridden = false;
     let notionalOverridden = false;
+    let configCollapsed = false;
+
+    // Floating config panel management
+    function updateConfigPanel() {
+        const config = {
+            method: riskMethodSelect.value,
+            currency: currencySelect.value,
+            market: {
+                price: parseFloat(priceEl.value) || 0,
+                atr: parseFloat(atrEl.value) || 0
+            },
+            risk: {
+                method: riskMethodSelect.value,
+                fixedAmount: parseFloat(riskAbsEl.value) || 0,
+                equityAmount: parseFloat(equityEl.value) || 0,
+                equityPercent: parseFloat(riskPctEl.value) || 0
+            },
+            position: {
+                kFactor: parseFloat(kInput.value) || 1,
+                leverage: parseFloat(leverageEl.value) || 1,
+                freeMargin: parseFloat(freeMarginEl.value) || 0
+            },
+            takeProfits: {
+                preset: tpPreset.value,
+                tp1Factor: parseFloat(tp1f.value) || 0,
+                tp2Factor: parseFloat(tp2f.value) || 0,
+                tp3Factor: parseFloat(tp3f.value) || 0,
+                allocations: {
+                    tp1Percent: parseFloat(tp1pctAlloc.value) || 0,
+                    tp2Percent: parseFloat(tp2pctAlloc.value) || 0,
+                    tp3Percent: parseFloat(tp3pctAlloc.value) || 0
+                }
+            }
+        };
+
+        const jsonStr = JSON.stringify(config, null, 2)
+            .replace(/"([^"]+)":/g, '<span class="json-key">"$1":</span>')
+            .replace(/: "([^"]+)"/g, ': <span class="json-string">"$1"</span>')
+            .replace(/: (\d+\.?\d*)/g, ': <span class="json-number">$1</span>')
+            .replace(/: (true|false)/g, ': <span class="json-boolean">$1</span>');
+        
+        configContent.innerHTML = jsonStr;
+    }
+
+    function toggleConfigPanel() {
+        configCollapsed = !configCollapsed;
+        floatingConfig.classList.toggle('collapsed', configCollapsed);
+        toggleConfigBtn.textContent = configCollapsed ? '+' : '−';
+    }
+    
+    // Conditional visibility based on risk method
+    function updateVisibility() {
+        const method = riskMethodSelect.value;
+        const volatilitySection = document.getElementById('volatilitySection');
+        const fixedRiskGroup = document.getElementById('fixedRiskGroup');
+        const percentRiskGroup = document.getElementById('percentRiskGroup');
+        
+        if (method === 'balance') {
+            // Hide volatility analysis for % of Balance method
+            volatilitySection.classList.add('hidden-section');
+            // Emphasize percentage risk group
+            percentRiskGroup.classList.remove('fade-out');
+            fixedRiskGroup.classList.add('fade-out');
+        } else { // atr method
+            // Show volatility analysis for ATR method
+            volatilitySection.classList.remove('hidden-section');
+            // Emphasize fixed risk group
+            fixedRiskGroup.classList.remove('fade-out');
+            percentRiskGroup.classList.add('fade-out');
+        }
+    }
 
     function update(){
         const sym = currencySelect.value;
@@ -641,6 +872,9 @@
         const totalPlanned = pnl1+pnl2+pnl3;
         plannedPnl.textContent = sym + ' ' + fmt(totalPlanned,2,2);
         plannedRR.textContent  = riskEuro>0 ? fmt(totalPlanned/riskEuro,2,2) + ' R' : '—';
+        
+        // Update config panel
+        updateConfigPanel();
     }
 
     // Listeners
@@ -678,6 +912,13 @@
     [tp1pctAlloc, tp2pctAlloc, tp3pctAlloc].forEach(el => el.addEventListener('input', update));
 
     currencySelect.addEventListener('change', ()=>applyCurrencySymbol(currencySelect.value));
+    
+    // New listeners for risk method and config panel
+    riskMethodSelect.addEventListener('change', () => {
+        updateVisibility();
+        update();
+    });
+    toggleConfigBtn.addEventListener('click', toggleConfigPanel);
 
     // Buttons
     document.getElementById('resetBtn').addEventListener('click', ()=>{
@@ -688,6 +929,7 @@
         tpAllocPreset.value='conservative'; applyAllocPreset('conservative');
         kOverridden=false; kInput.value='1.00';
         currencySelect.value='$'; applyCurrencySymbol('$');
+        riskMethodSelect.value='balance';
         notionalOverridden=false; notionalInput.value='';
         notionalHint.textContent='Auto: Units × Price. (Manual override off)';
         update(); priceEl.focus();
@@ -698,6 +940,7 @@
         leverageEl.value='2.00'; freeMarginEl.value='1500';
         tpPreset.value='moderate'; applyPreset('moderate');
         tpAllocPreset.value='conservative'; applyAllocPreset('conservative');
+        riskMethodSelect.value='balance';
         kOverridden=false; notionalOverridden=false; update();
     });
 
@@ -705,6 +948,8 @@
     applyPreset('moderate');
     applyAllocPreset('conservative');
     applyCurrencySymbol('$');
+    updateVisibility();
+    updateConfigPanel();
 </script>
 </body>
 </html>
